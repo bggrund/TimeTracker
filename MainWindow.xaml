@@ -1,0 +1,507 @@
+﻿<Window x:Class="TimeTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TimeTracker"
+        mc:Ignorable="d"
+        Title="TimeTracker" 
+        Height="744" Width="345"
+        MinHeight="334" MinWidth="345"
+        x:Name="mainWindow" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/Resources/clock_icon.png"
+        FocusManager.FocusedElement="{Binding ElementName=NewProjectNameTextBox}"
+        Closing="SaveProjectTimeData"
+        Loaded="mainWindow_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="26"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <!-- Menu -->
+            <Menu Background="Transparent" Margin="0 0 0 5">
+                <MenuItem Header="File">
+                    <MenuItem Header="Choose project time data file..." Command="{Binding ProjectTimeDataCollectionViewModel.ChooseProjectTimeDataFileCommand}"/>
+                    <MenuItem Header="Open project time data file location" Command="{Binding ProjectTimeDataCollectionViewModel.OpenProjectTimeDataFileLocationCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Configuration" Click="Config_Click"/>
+                    <Separator/>
+                    <MenuItem Header="Reset all" Command="{Binding ProjectTimeDataCollectionViewModel.ResetAllCommand}"/>
+                    <MenuItem Header="Reset all and log time" Command="{Binding ProjectTimeDataCollectionViewModel.ResetAllAndLogTimeCommand}"/>
+                </MenuItem>
+            </Menu>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Charge Number:" TextAlignment="Right" Width="88" Margin="5,0,0,0"/>
+                <TextBox Text="{Binding NewProjectChargeNumber, UpdateSourceTrigger=PropertyChanged}" Width="119" Margin="5,0,8,0">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding AddItemCommand}" CommandParameter="{Binding AddItemCanExecuteParameter}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                <TextBlock Text="Display Name:" TextAlignment="Right" Width="88" Margin="5,0,0,0"/>
+                <TextBox Text="{Binding NewProjectDisplayName, UpdateSourceTrigger=PropertyChanged}" Width="119" Margin="5,0,8,0">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding AddItemCommand}" CommandParameter="{Binding AddItemCanExecuteParameter}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Padding="8,0" Command="{Binding AddItemCommand}" CommandParameter="{Binding AddItemCanExecuteParameter}">Add Project</Button>
+            </StackPanel>
+            <!--
+         <Border x:Name="ProjectItem" BorderBrush="Gray" Width="300" Height="200" BorderThickness="1" CornerRadius="3,3,3,3" Margin="5,5,0,0">
+            <Grid>
+               <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="40"/>
+                  <ColumnDefinition Width="70"/>
+                  <ColumnDefinition />
+               </Grid.ColumnDefinitions>
+               <Button Grid.Column="2" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.RemoveItemCommand, ElementName=mainWindow}"
+                                            HorizontalAlignment="Right" VerticalAlignment="Top" Width="18" Height="18" ToolTip="Remove" Margin="0,4,4,0"
+                                            Click="RemoveItemButtonClick">
+                  <Image Source="{StaticResource Close}" />
+               </Button>
+               <TextBlock Grid.ColumnSpan="3" Text="G2732" FontSize="14" FontWeight="Bold" Foreground="White" Background="DarkSlateGray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="4,4,0,0" Padding="5,0"/>
+               <Grid Margin="0 26 0 10">
+                  <Grid.RowDefinitions>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                  </Grid.RowDefinitions>
+                  <TextBlock Grid.Row="0" Text="M:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                  <TextBlock Grid.Row="1" Text="T:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                  <TextBlock Grid.Row="2" Text="W:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                  <TextBlock Grid.Row="3" Text="R:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                  <TextBlock Grid.Row="4" Text="F:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+               </Grid>
+               <Grid Grid.Column="1" Margin="0 26 0 10">
+                  <Grid.RowDefinitions>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                  </Grid.RowDefinitions>
+                  <Grid Margin="0,5,0,0">
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                     </Grid.ColumnDefinitions>
+                     <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementMonday, ElementName=mainWindow}">-</Button>
+                     <TextBox Grid.Column="1"></TextBox>
+                     <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementMonday, ElementName=mainWindow}">+</Button>
+                  </Grid>
+                  <Grid Grid.Row="1" Margin="0,5,0,0">
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                     </Grid.ColumnDefinitions>
+                     <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementTuesday, ElementName=mainWindow}">-</Button>
+                     <TextBox Grid.Column="1"></TextBox>
+                     <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementTuesday, ElementName=mainWindow}">+</Button>
+                  </Grid>
+                  <Grid Grid.Row="2" Margin="0,5,0,0">
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                     </Grid.ColumnDefinitions>
+                     <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementWednesday, ElementName=mainWindow}">-</Button>
+                     <TextBox Grid.Column="1"></TextBox>
+                     <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementWednesday, ElementName=mainWindow}">+</Button>
+                  </Grid>
+                  <Grid Grid.Row="3" Margin="0,5,0,0">
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                     </Grid.ColumnDefinitions>
+                     <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementThursday, ElementName=mainWindow}">-</Button>
+                     <TextBox Grid.Column="1"></TextBox>
+                     <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementThursday, ElementName=mainWindow}">+</Button>
+                  </Grid>
+                  <Grid Grid.Row="4" Margin="0,5,0,0">
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                     </Grid.ColumnDefinitions>
+                     <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementFriday, ElementName=mainWindow}">-</Button>
+                     <TextBox Grid.Column="1"></TextBox>
+                     <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementFriday, ElementName=mainWindow}">+</Button>
+                  </Grid>
+               </Grid>
+               <Grid Grid.Column="2" Margin="0 26 0 10">
+                  <Grid.RowDefinitions>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                     <RowDefinition/>
+                  </Grid.RowDefinitions>
+                  <TextBox Grid.Row="0" FontSize="12" Text="{Binding MondayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                  <TextBox Grid.Row="1" FontSize="12" Text="{Binding TuesdayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                  <TextBox Grid.Row="2" FontSize="12" Text="{Binding WednesdayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                  <TextBox Grid.Row="3" FontSize="12" Text="{Binding ThursdayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                  <TextBox Grid.Row="4" FontSize="12" Text="{Binding FridayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+
+               </Grid>
+            </Grid>
+         </Border>
+         -->
+            <!--
+        <Border x:Name="ProjectItem" Visibility="Collapsed" Grid.Row="1" BorderBrush="Gray" BorderThickness="1" CornerRadius="3,3,3,3" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Click="ResizeButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Height="18" ToolTip="Restore" Margin="4,4,0,0">
+                    <Image Source="{StaticResource Restore}" />
+                </Button>
+                <Grid Margin="0 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Website:" Style="{StaticResource AccountDataTextBlockStyle}"/>
+                    <TextBlock Grid.Row="1" Text="Email:" Style="{StaticResource AccountDataTextBlockStyle}"/>
+                    <TextBlock Grid.Row="2" Text="Username:" Style="{StaticResource AccountDataTextBlockStyle}"/>
+                    <TextBlock Grid.Row="3" Style="{StaticResource AccountDataTextBlockStyle}"
+                                                   TextAlignment="Right"
+                                                   Height="Auto"
+                                                   VerticalAlignment="Top">
+                                            <Run Text="Misc Info/"/><LineBreak/><Run Text="Password Hint:"/>
+                    </TextBlock>
+                </Grid>
+                <Grid Grid.Column="1" Margin="0 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0" FontSize="12" Text="{Binding Website}" Style="{StaticResource AccountDataTextBoxStyle}" LostFocus="SaveAccountData"/>
+                    <TextBox Grid.Row="1" FontSize="12" Text="{Binding Email}" Style="{StaticResource AccountDataTextBoxStyle}" LostFocus="SaveAccountData"/>
+                    <TextBox Grid.Row="2" FontSize="12" Text="{Binding Username}" Style="{StaticResource AccountDataTextBoxStyle}" LostFocus="SaveAccountData"/>
+                    <TextBox Grid.Row="3" FontSize="12" Text="{Binding PasswordHint}" Style="{StaticResource AccountDataTextBoxStyle}" 
+                                                 VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Height="Auto" 
+                                                 TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True"
+                                                 LostFocus="SaveAccountData"/>
+                </Grid>
+            </Grid>
+        </Border>
+        -->
+        </StackPanel>
+
+        <!-- Item Collection -->
+        <ScrollViewer Grid.Row="1" Name="MainScrollViewer" Visibility="Visible" HorizontalScrollBarVisibility="Disabled" Margin="0,5,0,0">
+            <WrapPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding ProjectTimeDataCollectionViewModel.CollectionView, Mode=TwoWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="ProjectItem" BorderBrush="Gray" Background="{Binding TotalTime, Converter={StaticResource totalTimeToBackgroundConverter}}" Width="300" Height="200" BorderThickness="1" CornerRadius="3,3,3,3" Margin="5,0,0,5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="2" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.RemoveItemCommand, ElementName=mainWindow}"
+                                            HorizontalAlignment="Right" VerticalAlignment="Top" Width="18" Height="18" ToolTip="Remove" Margin="0,4,4,0"
+                                            Click="RemoveItemButtonClick">
+                                        <Image Source="{StaticResource Close}" />
+                                    </Button>
+                                    <TextBlock Grid.ColumnSpan="3" Text="{Binding DisplayName}" FontSize="14" FontWeight="Bold" Foreground="White" Background="DarkSlateGray" HorizontalAlignment="Left" VerticalAlignment="Top" Height="22" Margin="4,4,0,0" Padding="5,0">
+                                        <TextBlock.ToolTip>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding ChargeNumber, StringFormat='{}{0}'}"/>
+                                                <TextBlock Text="{Binding TotalTime, StringFormat='Total time logged this week: {0}'}"/>
+                                                <TextBlock Text="{Binding TotalLoggedTime, StringFormat='Total time logged previously: {0}'}"/>
+                                            </StackPanel>
+                                            <!--
+                                 <TextBlock>
+                                    <TextBlock.Text>
+                                       <MultiBinding StringFormat="Total time this week: {0}\nTotal time charged: {1}">
+                                          <Binding Path="TotalTime"/>
+                                          <Binding Path="TotalLoggedTime"/>
+                                       </MultiBinding>
+                                    </TextBlock.Text>
+                                 </TextBlock>
+                                 -->
+                                        </TextBlock.ToolTip>
+                           </TextBlock>
+                                    <Grid Margin="0 26 0 10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="M:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                                        <TextBlock Grid.Row="1" Text="T:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                                        <TextBlock Grid.Row="2" Text="W:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                                        <TextBlock Grid.Row="3" Text="R:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                                        <TextBlock Grid.Row="4" Text="F:" Style="{StaticResource ProjectTimeDataTextBlockStyle}"/>
+                                    </Grid>
+                                    <Grid Grid.Column="1" Margin="0 26 0 10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementMondayCommand, ElementName=mainWindow}">-</Button>
+                                            <TextBox Grid.Column="1" Margin="0 4" TextAlignment="Center" Text="{Binding MondayTime}" IsReadOnly="True"
+                                            Background="{Binding MondayTime, Converter={StaticResource hoursToColorConverter}}"
+                                            PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                                            <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementMondayCommand, ElementName=mainWindow}">+</Button>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementTuesdayCommand, ElementName=mainWindow}">-</Button>
+                                            <TextBox Grid.Column="1" Margin="0 4" TextAlignment="Center" Text="{Binding TuesdayTime}" IsReadOnly="True"
+                                            Background="{Binding TuesdayTime, Converter={StaticResource hoursToColorConverter}}" PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                                            <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementTuesdayCommand, ElementName=mainWindow}">+</Button>
+                                        </Grid>
+                                        <Grid Grid.Row="2" Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementWednesdayCommand, ElementName=mainWindow}">-</Button>
+                                            <TextBox Grid.Column="1" Margin="0 4" Text="{Binding WednesdayTime}" IsReadOnly="True"
+                                            Background="{Binding WednesdayTime, Converter={StaticResource hoursToColorConverter}}" TextAlignment="Center" PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                                            <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementWednesdayCommand, ElementName=mainWindow}">+</Button>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementThursdayCommand, ElementName=mainWindow}">-</Button>
+                                            <TextBox Grid.Column="1" Margin="0 4" Text="{Binding ThursdayTime}" IsReadOnly="True"
+                                            Background="{Binding ThursdayTime, Converter={StaticResource hoursToColorConverter}}" TextAlignment="Center" PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                                            <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementThursdayCommand, ElementName=mainWindow}">+</Button>
+                                        </Grid>
+                                        <Grid Grid.Row="4" Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.DecrementFridayCommand, ElementName=mainWindow}">-</Button>
+                                            <TextBox Grid.Column="1" Margin="0 4" TextAlignment="Center" Text="{Binding FridayTime}" IsReadOnly="True"
+                                            Background="{Binding FridayTime, Converter={StaticResource hoursToColorConverter}}" PreviewTextInput="TextBox_PreviewTextInput"></TextBox>
+                                            <Button Grid.Column="2" Margin="2 4" CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ProjectTimeDataCollectionViewModel.IncrementFridayCommand, ElementName=mainWindow}">+</Button>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid Grid.Column="2" Margin="0 26 0 10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBox Grid.Row="0" FontSize="12" Text="{Binding MondayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                                        <TextBox Grid.Row="1" FontSize="12" Text="{Binding TuesdayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                                        <TextBox Grid.Row="2" FontSize="12" Text="{Binding WednesdayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                                        <TextBox Grid.Row="3" FontSize="12" Text="{Binding ThursdayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+                                        <TextBox Grid.Row="4" FontSize="12" Text="{Binding FridayNotes}" Style="{StaticResource ProjectTimeDataTextBoxStyle}" LostFocus="SaveProjectTimeData"/>
+
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </WrapPanel>
+        </ScrollViewer>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Border Name="MondayDisplay" BorderBrush="Black" BorderThickness="1" CornerRadius="3,3,3,3" Margin="3 4" Padding="2 0" ToolTip="{Binding ProjectTimeDataCollectionViewModel.MondayDisplay}" MouseEnter="DayDisplay_MouseEnter">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="M: "/>
+                        <TextBlock Text="{Binding ProjectTimeDataCollectionViewModel.MondayTotal}"/>
+                    </StackPanel>
+                </Border>
+                <Border Name="TuesdayDisplay" BorderBrush="Black" BorderThickness="1" CornerRadius="3,3,3,3" Margin="3 4" Padding="2 0" ToolTip="{Binding ProjectTimeDataCollectionViewModel.TuesdayDisplay}" MouseEnter="DayDisplay_MouseEnter">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="T: "/>
+                        <TextBlock Text="{Binding ProjectTimeDataCollectionViewModel.TuesdayTotal}"/>
+                    </StackPanel>
+                </Border>
+                <Border Name="WednesdayDisplay" BorderBrush="Black" BorderThickness="1" CornerRadius="3,3,3,3" Margin="3 4" Padding="2 0" ToolTip="{Binding ProjectTimeDataCollectionViewModel.WednesdayDisplay}" MouseEnter="DayDisplay_MouseEnter">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="W: "/>
+                        <TextBlock Text="{Binding ProjectTimeDataCollectionViewModel.WednesdayTotal}"/>
+                    </StackPanel>
+                </Border>
+                <Border Name="ThursdayDisplay" BorderBrush="Black" BorderThickness="1" CornerRadius="3,3,3,3" Margin="3 4" Padding="2 0" ToolTip="{Binding ProjectTimeDataCollectionViewModel.ThursdayDisplay}" MouseEnter="DayDisplay_MouseEnter">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="R: "/>
+                        <TextBlock Text="{Binding ProjectTimeDataCollectionViewModel.ThursdayTotal}"/>
+                    </StackPanel>
+                </Border>
+                <Border Name="FridayDisplay" BorderBrush="Black" BorderThickness="1" CornerRadius="3,3,3,3" Margin="3 4" Padding="2 0" ToolTip="{Binding ProjectTimeDataCollectionViewModel.FridayDisplay}" MouseEnter="DayDisplay_MouseEnter">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="F: "/>
+                        <TextBlock Text="{Binding ProjectTimeDataCollectionViewModel.FridayTotal}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <Button Command="{Binding ProjectTimeDataCollectionViewModel.SaveTimesheetCommand}" CommandParameter="{Binding ProjectTimeDataCollectionViewModel.SavingTimesheet}" Grid.Column="1" Content="Save Timesheet" Margin="3"/>
+        </Grid>
+    </Grid>
+    <!--
+    <Grid>
+      <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+         <RowDefinition/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+         <ColumnDefinition/>
+         <ColumnDefinition Width="267"/>
+      </Grid.ColumnDefinitions>
+      <Grid Grid.Column="1">
+         <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="3,3,3,3" Margin="0,10,5,10">
+            <Grid x:Name="newAccountBox" Margin="0,0,0,0">
+               <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="100"/>
+                  <ColumnDefinition/>
+               </Grid.ColumnDefinitions>
+               <Label x:Name="lblInputWebsite" Content="Website:" HorizontalAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
+               <Label x:Name="lblInputEmail" Content="Email:" HorizontalAlignment="Right" Margin="0,40,0,0" VerticalAlignment="Top" Height="26" Width="41"/>
+               <Label x:Name="lblInputUsername" Content="Username:" HorizontalAlignment="Right" Margin="0,70,0,0" VerticalAlignment="Top" Height="26" Width="66"/>
+               <Label x:Name="lblInputPasswordHint" HorizontalContentAlignment="Right" Margin="0,100,0,0" VerticalAlignment="Top">
+                  <TextBlock TextAlignment="Right"><Run Text="Misc Info/"/><LineBreak/><Run Text="Password Hint:"/></TextBlock>
+               </Label>
+               <TextBox x:Name="txtInputWebsite" FontSize="9" Text="{Binding Website}" Grid.Column="1" Height="23" Margin="10,13,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TabIndex="5"/>
+               <TextBox x:Name="txtInputEmail" FontSize="9" Text="{Binding Email}" Grid.Column="1" Height="23" Margin="10,40,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TabIndex="6"/>
+               <TextBox x:Name="txtInputUsername" FontSize="9" Text="{Binding Username}" Grid.Column="1" Height="23" Margin="10,70,10,0" TextWrapping="NoWrap" VerticalAlignment="Top" TabIndex="7"/>
+               <TextBox x:Name="txtInputPasswordHint" FontSize="9" Text="{Binding PasswordHint}" AcceptsReturn="True" Grid.Column="1" Height="46" Margin="10,100,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TabIndex="8"/>
+               <Button x:Name="btnAdd" Content="Add" Grid.Column="1" Margin="10,0,10,5" VerticalAlignment="Bottom" Click="btnAdd_Click" TabIndex="9"/>
+               <Button x:Name="btnClear" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Height="18" ToolTip="Remove" Margin="4,4,0,0" Click="btnClear_Click">
+                  <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,3" Height="14">
+                                 <Bold>x</Bold>
+                  </TextBlock>
+               </Button>
+            </Grid>
+         </Border>
+      </Grid>
+      <Grid Height="23" Margin="5,10,4,0" VerticalAlignment="Top" >
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+         </Grid.ColumnDefinitions>
+         <TextBox Grid.Column="0" x:Name="searchBox" TextWrapping="Wrap" Text="Search here..." KeyUp="SearchBox_KeyUp" TabIndex="0" Grid.ColumnSpan="2"/>
+         <Button Name="btnClearText" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="23" Height="23" Click="btnClearText_Click">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,3" Height="14">
+               <Bold>x</Bold>
+            </TextBlock>
+         </Button>
+      </Grid>
+      <GroupBox x:Name="groupBox" Header="Search Fields" Margin="5,38,4,9">
+         <StackPanel>
+            <CheckBox x:Name="cbWebsite" Content="Website" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" IsChecked="True" Checked="searchField_CheckedChanged" Unchecked="searchField_CheckedChanged" TabIndex="1"/>
+            <CheckBox x:Name="cbEmail" Content="Email" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" IsChecked="True" Checked="searchField_CheckedChanged" Unchecked="searchField_CheckedChanged" TabIndex="2"/>
+            <CheckBox x:Name="cbUsername" Content="Username" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" IsChecked="True" Checked="searchField_CheckedChanged" Unchecked="searchField_CheckedChanged" TabIndex="3"/>
+            <CheckBox x:Name="cbPasswordHint" Content="Info/Password Hint" HorizontalAlignment="Left" Margin="10,14,0,0" VerticalAlignment="Top" IsChecked="True" Checked="searchField_CheckedChanged" Unchecked="searchField_CheckedChanged" TabIndex="4"/>
+         </StackPanel>
+      </GroupBox>
+      <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Disabled">
+         <WrapPanel x:Name="credentialBoxPanel" Grid.Row="1" Grid.ColumnSpan="2" Margin="0">
+            <ItemsControl Name="credentialItemsControl">
+               <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                     <Border BorderBrush="Gray" Grid.Row="1" Width="250" Height="160" BorderThickness="1" CornerRadius="3,3,3,3" Margin="5,5,0,0">
+                        <Grid x:Name="credentialBox" Grid.Column="1" Margin="0,0,0,0">
+                           <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="100"/>
+                              <ColumnDefinition Width="150"/>
+                           </Grid.ColumnDefinitions>
+                           <Label x:Name="label1" Content="Website:" HorizontalAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Top" Height="26" Width="55"/>
+                           <Label x:Name="label2" Content="Email:" HorizontalAlignment="Right" Margin="0,40,0,0" VerticalAlignment="Top" Height="26" Width="41"/>
+                           <Label x:Name="label3" Content="Username:" HorizontalAlignment="Right" Margin="0,70,0,0" VerticalAlignment="Top" Height="26" Width="66"/>
+                           <Label x:Name="label4" HorizontalContentAlignment="Right" Margin="0,100,0,0" VerticalAlignment="Top">
+                              <TextBlock TextAlignment="Right"><Run Text="Misc Info/"/><LineBreak/><Run Text="Password Hint:"/></TextBlock>
+                           </Label>
+                           <TextBox x:Name="txtWebsite" FontSize="9" Text="{Binding Website}" Grid.Column="1" Height="23" Margin="10,13,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="txtWebsite_TextChanged"/>
+                           <TextBox x:Name="txtEmail" FontSize="9" Text="{Binding Email}" Grid.Column="1" Height="23" Margin="10,40,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="txtEmail_TextChanged"/>
+                           <TextBox x:Name="txtUsername" FontSize="9" Text="{Binding Username}" Grid.Column="1" Height="23" Margin="10,70,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="txtUsername_TextChanged"/>
+                           <TextBox x:Name="txtPasswordHint" FontSize="9" Text="{Binding PasswordHint}" VerticalScrollBarVisibility="Auto" Grid.Column="1" Height="46" Margin="10,100,10,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="txtPasswordHint_TextChanged"/>
+                           <Button x:Name="btnRemove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Height="18" ToolTip="Remove" Margin="4,4,0,0" Click="btnRemove_Click">
+                              <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-3,0,3" Height="14">
+                                 <Bold>x</Bold>
+                              </TextBlock>
+                           </Button>
+                        </Grid>
+                     </Border>
+                  </DataTemplate>
+               </ItemsControl.ItemTemplate>
+               <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                     <WrapPanel />
+                  </ItemsPanelTemplate>
+               </ItemsControl.ItemsPanel>
+            </ItemsControl>
+         </WrapPanel>
+      </ScrollViewer>
+   </Grid>
+    -->
+</Window>

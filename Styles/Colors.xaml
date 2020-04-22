@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TimeTracker.Styles">
+
+    <Color x:Key="BackgroundDark">#333333</Color>
+    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDark}" />
+
+    <Color x:Key="PanelDark">#444444</Color>
+    <SolidColorBrush x:Key="PanelDarkBrush" Color="{StaticResource PanelDark}" />
+
+    <Color x:Key="HightlightDark">#555555</Color>
+    <SolidColorBrush x:Key="HightlightDarkBrush" Color="{StaticResource HightlightDark}" />
+
+    <Color x:Key="ForegroundDark">#dddddd</Color>
+    <SolidColorBrush x:Key="ForegroundDarkBrush" Color="{StaticResource ForegroundDark}" />
+</ResourceDictionary>

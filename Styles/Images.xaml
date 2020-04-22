@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:TimeTracker">
+
+    <BitmapImage x:Key="DownTriangle" UriSource="pack://application:,,,/Resources/triangle_down.png"/>
+    <BitmapImage x:Key="RightTriangle" UriSource="pack://application:,,,/Resources/triangle_right.png"/>
+    <BitmapImage x:Key="Close" UriSource="pack://application:,,,/Resources/close.png"/>
+    <BitmapImage x:Key="Restore" UriSource="pack://application:,,,/Resources/restore.png"/>
+    <BitmapImage x:Key="Maximize" UriSource="pack://application:,,,/Resources/maximize.png"/>
+</ResourceDictionary>
