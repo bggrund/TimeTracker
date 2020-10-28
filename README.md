@@ -1,4 +1,4 @@
-# PasswordHints
-Provides quick and easy password hint storage and retrieval
+# TimeTracker
+Tracks time spent on projects and exports to Excel spreadsheet for use in SAP
 
 Written in WPF
